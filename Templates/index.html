@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head><title>Leveling Program</title></head>
+
+
+<body>
+
+  You have got this you will figure this out!!! :D
+
+  <br>
+  </br>
+
+  This page will have to include detailed instructions for using the website. Explain what each available page is and what it's used for. Then, it is up to the users to navigate where they need to. Include in these instructions best practices for naming and storing output files.
+</body>
+<br>
+</br>
+
+<form action="/sorted" id="run_app">
+
+
+  Camper Preferences <input type="file" id="preferences" name="preferences" accept=".xlsx"> <br /><br />
+  Camper Histories <input type="file" id="histories" name="histories" accept=".xlsx"><br /><br />
+  Activities  <input type="file" id="activities" name="activities" accept=".xlsx"><br /><br />
+  <input type="submit" value="Submit"/>
+  <!-- <a href="/Users/shelly/Documents/Ramah/Leveling/Test Code Output/testing-master.xlsx" download="">Download</a> -->
+
+
+
+<script>
+  let form = document.getElementById("run_app");
+  form.onsubmit = function() {
+      if (!form.preferences.value) {
+                alert("Missing preferences document.");
+                // return false;
+              }
+      if (!form.histories.value) {
+                alert("Missing histories document.");
+                // return false;
+              }
+      if (!form.activities.value) {
+                alert("Missing activities document.");
+                // return false;
+              }
+      const camperPreferences = document.getElementById("preferences").files[0]
+      alert(camperPreferences.name)
+      const objectURL = window.URL.createObjectURL(camperPreferences);
+
+
+
+
+
+      $.ajax({
+                url: objectURL,
+                success: function(response) {
+     // here you do whatever you want with the response variable -- aka run application.py on this, taking in the right URLs
+   }
+});
+  }
+
+</script>
+</form>
+</html>
