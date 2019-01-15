@@ -9,33 +9,33 @@ import openpyxl
 from Helpers import create_campers, create_activities, update_campers, output_cycle_excel, output_master_excel, sort_campers
 
 # ======================================================================================
-"""This is code for creating camper objects with name, edah, bunk, and preferences (up to 9 of them)"""
-
-campers_location = "/Users/shelly/Documents/Ramah/Leveling/Test File Campers.xlsx"          # Give the location of the input file
-campers = list()                                                                            # Initializes the list
-create_campers(campers, campers_location)
-
-
-"""This is code for creating activity objects"""
-
-activities_location = "/Users/shelly/Documents/Ramah/Leveling/Test File Activities.xlsx"    # Give the location of the input file
-activities = list()                                                                         # Initializes the list
-create_activities(activities, activities_location)
-
-
-"""This is code for updating camper objects"""
-
-history_location = "/Users/shelly/Documents/Ramah/Leveling/Test File Past Activities.xlsx"  # Give the location of the input file
-update_campers(campers, history_location)                                                   # Update camper objects
-
-
-"""This is code for sorting campers into their activities for the coming cycle"""
-sort_campers(campers, activities)
-
-
-"""This is code for outputting the end of the project"""
-#output_cycle_excel(campers, "testing-cycle")
-output_master_excel(campers, "testing-master")
+# """This is code for creating camper objects with name, edah, bunk, and preferences (up to 9 of them)"""
+#
+# campers_location = "/Users/shelly/Documents/Ramah/Leveling/Test File Campers.xlsx"          # Give the location of the input file
+# campers = list()                                                                            # Initializes the list
+# create_campers(campers, campers_location)
+#
+#
+# """This is code for creating activity objects"""
+#
+# activities_location = "/Users/shelly/Documents/Ramah/Leveling/Test File Activities.xlsx"    # Give the location of the input file
+# activities = list()                                                                         # Initializes the list
+# create_activities(activities, activities_location)
+#
+#
+# """This is code for updating camper objects"""
+#
+# history_location = "/Users/shelly/Documents/Ramah/Leveling/Test File Past Activities.xlsx"  # Give the location of the input file
+# update_campers(campers, history_location)                                                   # Update camper objects
+#
+#
+# """This is code for sorting campers into their activities for the coming cycle"""
+# sort_campers(campers, activities)
+#
+#
+# """This is code for outputting the end of the project"""
+# #output_cycle_excel(campers, "testing-cycle")
+# output_master_excel(campers, "testing-master")
 
 
 # import urllib.request
@@ -109,7 +109,7 @@ def sorted():
         #####NEED TO DEVELOP THIS IF THIS MATTERS
 
 
-# 
+#
 # @app.route('/download/', methods=['GET'])
 # def download():
 #     url = request.args['url']
