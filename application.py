@@ -1,9 +1,11 @@
 # Setting up for online ability
-from flask import Flask, flash, redirect, render_template, request, send_file
+from flask import Flask, flash, redirect, render_template, request, send_file, Response
 
 # Reading and writing an excel file using Python
 import xlrd
 import openpyxl
+from tempfile import NamedTemporaryFile
+
 
 # Helper functions I wrote to clean up application.py code
 from Helpers import create_campers, create_activities, update_campers, output_cycle_excel, output_master_excel, sort_campers
@@ -74,37 +76,45 @@ if app.config["DEBUG"]:
 def index():
     """Display homescreen"""
     # User reached route via POST (as by submitting a form via POST)
-    if request.method == "POST":
-        # Create camper objects
-        campers_location = request.form.get(preferences)                                            # Give the location of the input file
-        campers = list()                                                                            # Initializes the list
-        create_campers(campers, campers_location)
-
-        # Create activity objects
-        activities_location = request.form.get(activities)                                          # Give the location of the input file
-        activities = list()                                                                         # Initializes the list
-        create_activities(activities, activities_location)
-
-        # Update camper objects
-        history_location = request.form.get(histories)                                              # Give the location of the input file
-        update_campers(campers, history_location)                                                   # Update camper objects
-
-        # Sort campers
-        sort_campers(campers, activities)
-
-        # Save update to my computer -- NEEDS TO BE CHANGED TO DOWNLOADING
-        file = output_master_excel(campers, "testing-master")
-        return render_template("sorted.html", file=file)
-
-    # User reached route via GET (as by clicking a link or via redirect)
-    else:
-        return render_template("index.html")
+    return render_template("index.html")
 
 
-@app.route("/sorted")
+@app.route("/sorted", methods=["POST"])
 def sorted():
     """Display homescreen"""
-    return render_template("sorted.html")
+
+    # Give the location of the input file
+    campers_location = request.files["preferences"]
+    # Initializes the list
+    campers = list()
+    create_campers(campers, campers_location)
+
+    # Create activity objects
+    activities_location = request.files["activities"]
+    # Give the location of the input file
+    activities = list()
+    # Initializes the list
+    create_activities(activities, activities_location)
+
+    # Update camper objects
+    history_location = request.files["histories"]
+    # Give the location of the input file
+    update_campers(campers, history_location)
+    # Update camper objects
+
+    # Sort campers
+    sort_campers(campers, activities)
+
+    wb = output_master_excel(campers, "foo")
+
+    with NamedTemporaryFile() as tmp:
+        wb.save(tmp.name)
+        tmp.seek(0)
+        stream = tmp.read()
+
+        r = Response(response=stream, status=200, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        r.headers["Content-Disposition"] = 'attachment; filename="campers.xlsx"'
+        return r
 
         #####NEED TO DEVELOP THIS IF THIS MATTERS
 

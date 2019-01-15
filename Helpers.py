@@ -30,7 +30,7 @@ def create_campers(empty_campers_list, excel_location):
 
 
     # Open the excel sheet
-    wb = xlrd.open_workbook(excel_location)        # Open the workbook of interest
+    wb = xlrd.open_workbook(file_contents=excel_location.read())        # Open the workbook of interest
     sheet = wb.sheet_by_index(0)                   # Index to the sheet of interest
 
     # Creates the proper number of campers in the list
@@ -123,7 +123,7 @@ def create_activities(empty_activities_list, excel_location):
             self.popularity_3 = 0        # for tracking how many campers want the activity when calculating popularity
 
     # Open excel sheet of interest
-    wb = xlrd.open_workbook(excel_location)  # Open the workbook of interest
+    wb = xlrd.open_workbook(file_contents=excel_location.read())
     sheet = wb.sheet_by_index(0)          # Index to the sheet of interest
 
     # Creates the proper number of activities in the list
@@ -159,7 +159,7 @@ def create_activities(empty_activities_list, excel_location):
 def update_campers(campers_list, excel_location):
 
     # Open excel sheet of interest
-    wb = xlrd.open_workbook(excel_location)    # Open the workbook of interest
+    wb = xlrd.open_workbook(file_contents=excel_location.read())    # Open the workbook of interest
     sheet = wb.sheet_by_index(0)               # Index to the sheet of interest
 
     # Extract data from the spreadsheet
@@ -925,6 +925,6 @@ def output_master_excel(campers_list, title):
             sheet.cell(row=i + 2, column=6 + j + max).value = campers_list[i].past_preferences[j]
 
     # Save the document
-    stream = save_virtual_workbook(book)
+    #stream = save_virtual_workbook(book)
     #book.save("/Users/shelly/Documents/Ramah/Leveling/Test Code Output/%s.xlsx" % title)
-    return stream
+    return book
