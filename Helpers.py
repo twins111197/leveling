@@ -881,8 +881,7 @@ def output_cycle_excel(campers_list, title):
         sheet.cell(row=i + 2, column=3).value = campers_list[i].bunk
         sheet.cell(row=i + 2, column=4).value = campers_list[i].next_activity
 
-    # Save the document
-    #book.save("/Users/shelly/Documents/Ramah/Leveling/Test Code Output/%s.xlsx" % title)#
+
 
 # ===================================================================================================
 
