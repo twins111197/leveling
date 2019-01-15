@@ -115,15 +115,3 @@ def sorted():
         r = Response(response=stream, status=200, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         r.headers["Content-Disposition"] = 'attachment; filename="campers.xlsx"'
         return r
-
-        #####NEED TO DEVELOP THIS IF THIS MATTERS
-
-
-#
-# @app.route('/download/', methods=['GET'])
-# def download():
-#     url = request.args['url']
-#     filename = request.args.get('filename', 'image.png')
-#     r = requests.get(url)
-#     strIO = StringIO.StringIO(r.content)
-#     return send_file(strIO, as_attachment=True, attachment_filename=filename)
