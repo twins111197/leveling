@@ -18,12 +18,6 @@ from Helpers import create_campers, create_activities, update_campers, output_cy
 # create_campers(campers, campers_location)
 #
 #
-# """This is code for creating activity objects"""
-#
-# activities_location = "/Users/shelly/Documents/Ramah/Leveling/Test File Activities.xlsx"    # Give the location of the input file
-# activities = list()                                                                         # Initializes the list
-# create_activities(activities, activities_location)
-#
 #
 # """This is code for updating camper objects"""
 #
