@@ -35,7 +35,7 @@ def index():
 
 @app.route("/sorted", methods=["POST"])
 def sorted():
-    """Display homescreen"""
+    """Sort campers and download the results as an Excel document"""
 
     # Give the location of the input file
     campers_location = request.files["preferences"]
@@ -59,7 +59,7 @@ def sorted():
     # Sort campers
     sort_campers(campers, activities)
 
-    wb = output_master_excel(campers, "foo")
+    wb = output_master_excel(campers)
 
     with NamedTemporaryFile() as tmp:
         wb.save(tmp.name)
@@ -67,5 +67,5 @@ def sorted():
         stream = tmp.read()
 
         r = Response(response=stream, status=200, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        r.headers["Content-Disposition"] = 'attachment; filename="campers.xlsx"'
+        r.headers["Content-Disposition"] = 'attachment; filename="%s.xlsx"' % request.form.get("filename")
         return r

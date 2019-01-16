@@ -888,7 +888,7 @@ def output_cycle_excel(campers_list, title):
 
 
 """Output master excel document"""
-def output_master_excel(campers_list, title):
+def output_master_excel(campers_list):
     book = Workbook()           # Create the workbook
     sheet = book.active         # Access the active sheet
 
@@ -923,7 +923,4 @@ def output_master_excel(campers_list, title):
             sheet.cell(row=i + 2, column=6 + j).value = campers_list[i].past_activities[j]
             sheet.cell(row=i + 2, column=6 + j + max).value = campers_list[i].past_preferences[j]
 
-    # Save the document
-    #stream = save_virtual_workbook(book)
-    #book.save("/Users/shelly/Documents/Ramah/Leveling/Test Code Output/%s.xlsx" % title)
     return book
