@@ -1,3 +1,5 @@
+from common import locate_header
+
 class Activity:
     def __init__(self, name, capacity, repeatability):
         self.name = name
