@@ -3,15 +3,36 @@
 
 <head><title>Leveling Program</title></head>
 
+<h1 align="center">CRB Leveling</h1>
 
 <body>
+  <p>
+    Welcome to Camp Ramah in the Berkshires's leveling system! This program will assign activities as best as it can trying to maximize camper happiness. Please just upload the required 3 files, press submit, and watch as your assigned campers instantly download to your computer! Please note: the program only accepts .xlsx files.
+  </p><br />
+  There are 3 input files on this page that you need to know about:
+  <ol>
+    <li>Camper Preferences</li>
+      <ul>
+        <li>
+          This document takes in the camper's preferences for the coming rotation. Currently, the program expects <b>no more than 6 camper preferences.</b> As currently constructed, there's only one field for "name," so please only include one column with the name rather than a first and last name (this can be changed easily, just let me know if that's preferable). Include edah and bunk if you want - if they're there, they'll appear in the output, and if not the output file will have empty columns.
+        </li>
+      </ul>
+    <li>Camper Histories</li>
+      <ul>
+        <li>
+          This document should contain a camper's name (make sure it matches what was listed for camper preferences!) and all of the past activities that this camper has had, plus the preference of those activities when assigned. The ultimate goal is to make the program self consistent, such that the overall output that you download can then be uploaded the next time around as the "camper histories" file so that you don't have to do any editing of your own. These are minor tweaks to add, all in due time.
+        </li>
+      </ul>
+    <li>Activities</li>
+      <ul>
+        <li>
+          This document should contain the name of every activity, the activity's capacity (if unlimited, enter a number equal to or larger than the number of campers being sorted), and either "Yes" or "No" if the activity is reapeatable or not (for example, you may not want to allow campers to repeat mitbachon, or perhaps an activity like biking offers the same program every rotation and therefore a camper would be terribly bored in that activity).
+        </li>
+      </ul>
+  </ol>
+  <br />
+  The algorithm for this program seeks to minimize the number of later choices as much as possible, while also including a tendency to hand out 2nd and 2nd choices instead of 1st and 3rd choices. It does this by always considering how hard the camper's next preference is to fill, and prioritizes those campers with harder following choices over those with easier following choices. It then looks for opportunities to switch 1st and 3rd, 4th, 5th... choices into 2nd and 2nd. The specifics are not terribly important, though, as Jake has found a better algorithm for accomplishing Didi's goals, which will be implemented in the coming days. More details available upon request.
 
-  You have got this you will figure this out!!! :D
-
-  <br>
-  </br>
-
-  This page will have to include detailed instructions for using the website. Explain what each available page is and what it's used for. Then, it is up to the users to navigate where they need to. Include in these instructions best practices for naming and storing output files.
 </body>
 <br>
 </br>
