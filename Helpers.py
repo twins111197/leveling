@@ -671,6 +671,16 @@ def sort_campers(updated_campers_list, created_activities_list):
 
     if are_campers_sorted(updated_campers_list):            # Need if statement because clean function assumes full camper list
         clean(updated_campers_list, created_activities_list)
+    else:
+        counter = 0
+        temporary_list = []
+        for i in range(len(updated_campers_list)):
+            if updated_campers_list[i - counter].next_activity == "":
+                temporary_list.append(updated_campers_list.pop(i - counter))
+                counter += 1
+        clean(updated_campers_list, created_activities_list)
+        for i in range(len(temporary_list)):
+            updated_campers_list.append(temporary_list.pop())
 
 
 
