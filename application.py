@@ -10,6 +10,7 @@ from tempfile import NamedTemporaryFile
 # Helper functions I wrote to clean up application.py code
 from Helpers import create_campers, create_activities, update_campers, sort_campers
 from xls_output import output_master_excel
+from guarding import check_preferences_for_input_errors, output_errors
 
 
 # ======================================================================================
@@ -39,11 +40,27 @@ def index():
 def sorted():
     """Sort campers and download the results as an Excel document"""
 
-    # Give the location of the input file
+    # Open the input file
     campers_location = request.files["preferences"]
+    wb = xlrd.open_workbook(file_contents=campers_location.read())
+    sheet = wb.sheet_by_index(0)
+    # Check input file for proper input
+    errors = check_preferences_for_input_errors(sheet)
+    if errors != []:
+        wb = output_errors(errors)
+        # Download errors file
+        with NamedTemporaryFile() as tmp:
+            wb.save(tmp.name)
+            tmp.seek(0)
+            stream = tmp.read()
+
+            r = Response(response=stream, status=200, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            r.headers["Content-Disposition"] = 'attachment; filename="errors.xlsx"'
+            return r
+
     # Initializes the list
     campers = list()
-    create_campers(campers, campers_location)
+    create_campers(campers, sheet)
 
     # Create activity objects
     activities_location = request.files["activities"]
