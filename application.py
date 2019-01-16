@@ -8,7 +8,9 @@ from tempfile import NamedTemporaryFile
 
 
 # Helper functions I wrote to clean up application.py code
-from Helpers import create_campers, create_activities, update_campers, output_cycle_excel, output_master_excel, sort_campers
+from Helpers import create_campers, create_activities, update_campers, sort_campers
+from xls_output import output_master_excel
+
 
 # ======================================================================================
 
@@ -60,7 +62,7 @@ def sorted():
     # Sort campers
     sort_campers(campers, activities)
 
-    wb = output_master_excel(campers)
+    wb = output_master_excel(campers, activities)
 
     with NamedTemporaryFile() as tmp:
         wb.save(tmp.name)
