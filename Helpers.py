@@ -164,7 +164,7 @@ def update_campers(campers_list, excel_location):
 
     # Extract data from the spreadsheet
     for k in range(sheet.ncols):       # k represents the excel column that contains names
-        if "name" in sheet.cell_value(0, k).lower() or "camper" sheet.cell_value(0, k).lower():   # Find names column
+        if "name" in sheet.cell_value(0, k).lower() or "camper" in sheet.cell_value(0, k).lower():   # Find names column
             for i in range(sheet.nrows - 1):  # Loop over names in the new spreadsheet
                 for j in range(len(campers_list)):  # Loop over names in camper list
                     if campers_list[j].name.lower() == sheet.cell_value(i + 1, k).lower():  # Identifies camper object corresponding to spreadsheet row
