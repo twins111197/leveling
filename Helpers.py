@@ -20,7 +20,6 @@ def create_campers(empty_campers_list, excel_location):
             self.past_activities = []   # for tracking the camper's previous activities
             self.past_preferences = []  # for tracking the camper's previous preferences
             self.next_activity = ""     # for recording the camper's assigned peulah for the coming session
-            #self.first_session = False
             self.pref_1 = ""
             self.pref_2 = ""
             self.pref_3 = ""
@@ -56,13 +55,6 @@ def create_campers(empty_campers_list, excel_location):
             for j in range(sheet.nrows - 1):
                 if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
                     empty_campers_list[j].edah = sheet.cell_value(j + 1, i)
-
-        # # Informs the program if a camper is only there for the first-session
-        # elif sheet.cell_value(0, i).lower() == "session":
-        #     for j in range(sheet.nrows - 1):
-        #         if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
-        #             if "1" in sheet.cell_value(j + 1, i).lower() or "first" in sheet.cell_value(j + 1, i).lower():
-        #                 empty_campers_list[j].first_session = True
 
         # Adds preferences to camper objects, up to 9 preferences -- same for loop as above
         elif "1" in sheet.cell_value(0, i) or "first" in sheet.cell_value(0, i).lower():
