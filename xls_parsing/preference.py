@@ -1,4 +1,4 @@
-from common import locate_header
+from xls_parsing.common import locate_header
 
 
 class Preference:

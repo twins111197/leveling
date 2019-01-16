@@ -1,4 +1,4 @@
-from common import locate_header
+from xls_parsing.common import locate_header
 
 class History:
     def __init__(self, name, bunk, past_activities, past_preferences):
@@ -25,7 +25,7 @@ def _parse_header(header_row):
     # Determine number of past activities -- assumes same number of preference columns as activity columns
     counter = 0
     for cell in header_row:
-        if "Activity" in cell.value:
+        if cell.value is not None and "Activity" in cell.value:
             counter += 1
     header_past_activities = ["Past Activity %d" % (i + 1) for i in range(counter)]
     header_past_preferences = ["Past Preference %d" % (i + 1) for i in range(counter)]
@@ -41,8 +41,8 @@ def _parse_header(header_row):
         """Takes in a row, returns a history object"""
         name = row[cols[header_name]].value
         bunk = row[cols[header_bunk]].value
-        past_activities = [row[cols[header_past_activities[i]]] for i in header_past_activities]
-        past_preferences = [row[cols[header_past_preferences[i]]] for i in header_past_preferences]
+        past_activities = [row[cols[i]] for i in header_past_activities]
+        past_preferences = [row[cols[i]] for i in header_past_preferences]
 
         history = History(name, bunk, past_activities, past_preferences)
 
