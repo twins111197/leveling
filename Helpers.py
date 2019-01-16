@@ -20,7 +20,6 @@ def create_campers(empty_campers_list, excel_location):
             self.past_activities = []   # for tracking the camper's previous activities
             self.past_preferences = []  # for tracking the camper's previous preferences
             self.next_activity = ""     # for recording the camper's assigned peulah for the coming session
-            #self.first_session = False
             self.pref_1 = ""
             self.pref_2 = ""
             self.pref_3 = ""
@@ -40,29 +39,22 @@ def create_campers(empty_campers_list, excel_location):
     # Loop over all columns, gathering spreadsheet information
     for i in range(sheet.ncols):
         # Adds names to each camper object
-        if sheet.cell_value(0, i).lower() == "name" or sheet.cell_value(0, i).lower() == "camper":
+        if "name" in sheet.cell_value(0, i).lower() or "camper" in sheet.cell_value(0, i).lower():
             for j in range(sheet.nrows - 1):
                 if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
                     empty_campers_list[j].name = sheet.cell_value(j + 1, i)
 
         # Adds bunks to each camper object -- same for loop as above
-        elif sheet.cell_value(0, i).lower() == "bunk" or sheet.cell_value(0, i).lower() == "tzrif":
+        elif "bunk" in sheet.cell_value(0, i).lower() or "tzrif" in sheet.cell_value(0, i).lower():
             for j in range(sheet.nrows - 1):
                 if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
                     empty_campers_list[j].bunk = sheet.cell_value(j + 1, i)
 
         # Adds edah to each camper object -- same for loop as above
-        elif sheet.cell_value(0, i).lower() == "edah":
+        elif "edah" in sheet.cell_value(0, i).lower():
             for j in range(sheet.nrows - 1):
                 if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
                     empty_campers_list[j].edah = sheet.cell_value(j + 1, i)
-
-        # # Informs the program if a camper is only there for the first-session
-        # elif sheet.cell_value(0, i).lower() == "session":
-        #     for j in range(sheet.nrows - 1):
-        #         if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
-        #             if "1" in sheet.cell_value(j + 1, i).lower() or "first" in sheet.cell_value(j + 1, i).lower():
-        #                 empty_campers_list[j].first_session = True
 
         # Adds preferences to camper objects, up to 9 preferences -- same for loop as above
         elif "1" in sheet.cell_value(0, i) or "first" in sheet.cell_value(0, i).lower():
@@ -164,7 +156,7 @@ def update_campers(campers_list, excel_location):
 
     # Extract data from the spreadsheet
     for k in range(sheet.ncols):       # k represents the excel column that contains names
-        if sheet.cell_value(0, k).lower() == "name" or sheet.cell_value(0, k).lower() == "camper":   # Find names column
+        if "name" in sheet.cell_value(0, k).lower() or "camper" in sheet.cell_value(0, k).lower():   # Find names column
             for i in range(sheet.nrows - 1):  # Loop over names in the new spreadsheet
                 for j in range(len(campers_list)):  # Loop over names in camper list
                     if campers_list[j].name.lower() == sheet.cell_value(i + 1, k).lower():  # Identifies camper object corresponding to spreadsheet row
@@ -278,7 +270,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 1)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 1)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -367,7 +359,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 2)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 2)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -456,7 +448,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 3)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 3)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -544,7 +536,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 4)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 4)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -623,7 +615,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 5)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 5)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -683,7 +675,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 6)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 6)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -888,7 +880,7 @@ def output_cycle_excel(campers_list, title):
 
 
 """Output master excel document"""
-def output_master_excel(campers_list, title):
+def output_master_excel(campers_list):
     book = Workbook()           # Create the workbook
     sheet = book.active         # Access the active sheet
 
