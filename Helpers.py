@@ -1,5 +1,4 @@
 # Reading and writing an excel file using Python
-import xlrd
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill
 from openpyxl.writer.excel import save_virtual_workbook
@@ -8,12 +7,7 @@ from flask import send_file
 
 
 """Takes in an empty list and the Excel sheet location with preferences for the upcoming cycle, returns populated list of camper objects with Name, Edah, Bunk, and Preferences"""
-def create_campers(empty_campers_list, excel_location):
 
-
-    # Open the excel sheet
-    wb = xlrd.open_workbook(file_contents=excel_location.read())        # Open the workbook of interest
-    sheet = wb.sheet_by_index(0)                   # Index to the sheet of interest
 
     # Creates the proper number of campers in the list
     for i in range(sheet.nrows - 1):             # Assumes header row
