@@ -1,5 +1,6 @@
 import xlrd
 from openpyxl import Workbook
+import xlsxwriter
 
 def check_preferences_for_input_errors(sheet):
     """Takes in the preferences spreadsheet, if there are errors then write them to an excel doc. Reads with xlrd."""
@@ -13,6 +14,11 @@ def check_preferences_for_input_errors(sheet):
                     if "At least two campers have the name %s in the preferences document" % sheet.cell(row1, 0).value not in errors:
                         errors.append("At least two campers have the name %s in the preferences document" % sheet.cell(row1, 0).value)
 
+    # Check that no cells are empty
+    for row in range(sheet.nrows):
+        for column in range(sheet.ncols):
+            if sheet.cell_type(row, column) == xlrd.XL_CELL_EMPTY:
+                errors.append("Row %d, Column %s, is empty." % (row, xlsxwriter.utility.xl_col_to_name(column)))
 
     return errors
 
