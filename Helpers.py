@@ -278,7 +278,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 1)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 1)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -367,7 +367,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 2)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 2)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -456,7 +456,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 3)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 3)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -544,7 +544,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 4)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 4)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -623,7 +623,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 5)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 5)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
@@ -683,7 +683,7 @@ def sort_campers(updated_campers_list, created_activities_list):
             for i in range(len(temp_list)):
                 if created_activities_list[j].members < created_activities_list[j].capacity:
                     if created_activities_list[j].repeatability or created_activities_list[j].name.lower() not in [x.lower() for x in temp_list[i - counter].past_activities]:                                        # As long as no illegal repeat
-                        assign_activity(temp_list[i], created_activities_list[j], 6)
+                        assign_activity(temp_list[i - counter], created_activities_list[j], 6)
                 updated_campers_list.append(temp_list.pop(i - counter))
                 counter += 1
 
