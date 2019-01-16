@@ -1,6 +1,6 @@
 import xlrd
 from openpyxl import Workbook
-import xlsxwriter
+from openpyxl.utils import get_column_letter
 
 def check_preferences_for_input_errors(sheet):
     """Takes in the preferences spreadsheet, if there are errors then write them to an excel doc. Reads with xlrd."""
@@ -18,7 +18,7 @@ def check_preferences_for_input_errors(sheet):
     for row in range(sheet.nrows):
         for column in range(sheet.ncols):
             if sheet.cell_type(row, column) == xlrd.XL_CELL_EMPTY:
-                errors.append("Row %d, Column %s, is empty." % (row, xlsxwriter.utility.xl_col_to_name(column)))
+                errors.append("Row %d, Column %s, is empty." % (row, get_column_letter(column)))
 
     return errors
 
