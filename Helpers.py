@@ -4,25 +4,6 @@ import xlrd
 
 """Takes in an empty list and the Excel sheet location with preferences for the upcoming cycle, returns populated list of camper objects with Name, Edah, Bunk, and Preferences"""
 def create_campers(empty_campers_list, sheet):
-    # Define the class of objects called campers
-    class Camper:
-        def __init__(self):
-            self.name = ""
-            self.edah = ""
-            self.bunk = ""
-            self.avg_pref = 0           # for tracking avg. preference of awarded activities
-            self.had_first = False      # for tracking if campers had their first choice yet
-            self.past_activities = []   # for tracking the camper's previous activities
-            self.past_preferences = []  # for tracking the camper's previous preferences
-            self.next_activity = ""     # for recording the camper's assigned peulah for the coming session
-            self.pref_1 = ""
-            self.pref_2 = ""
-            self.pref_3 = ""
-            self.pref_4 = ""
-            self.pref_5 = ""
-            self.pref_6 = ""
-
-
     # Creates the proper number of campers in the list
     for i in range(sheet.nrows - 1):             # Assumes header row
         empty_campers_list.append(Camper())
