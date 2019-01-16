@@ -48,7 +48,7 @@ def create_campers(empty_campers_list, sheet):
                     empty_campers_list[j].edah = sheet.cell_value(j + 1, i)
 
         # Adds preferences to camper objects, up to 9 preferences -- same for loop as above
-        elif "1" in sheet.cell_value(0, i) or "first" in sheet.cell_value(0, i).lower():
+        elif "1" in sheet.cell_value(0, i) or "first" in sheet.cell_value(0, i).lower(): # If name becomes first + last, problem here
             for j in range(sheet.nrows - 1):
                 if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
                     empty_campers_list[j].pref_1 = sheet.cell_value(j + 1, i)
