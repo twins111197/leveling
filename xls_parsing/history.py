@@ -8,7 +8,7 @@ class History:
         self.past_preferences = past_preferences
 
 def parse_sheet(sheet):
-    """Takes in an Excel sheet and spits out objects containing camper histories"""
+    """Takes in an Excel sheet and spits out a list of objects containing camper histories"""
     header_row = sheet[1]
 
     create_history = _parse_header(header_row)
@@ -41,8 +41,8 @@ def _parse_header(header_row):
         """Takes in a row, returns a history object"""
         name = row[cols[header_name]].value
         bunk = row[cols[header_bunk]].value
-        past_activities = [row[cols[i]] for i in header_past_activities]
-        past_preferences = [row[cols[i]] for i in header_past_preferences]
+        past_activities = [row[cols[i]].value for i in header_past_activities]
+        past_preferences = [row[cols[i]].value for i in header_past_preferences]
 
         history = History(name, bunk, past_activities, past_preferences)
 

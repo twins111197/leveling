@@ -15,9 +15,9 @@ def parse_sheet(sheet):
     """Takes in the preferences excel sheet, spits out a list of campers"""
     header_row = sheet[1]
     # create camper is now a function, takes in a row and gives you a camper
-    create_camper = _parse_header(header_row)
+    create_preference = _parse_header(header_row)
     # Create list of campers    # Min row = 2 to avoid the header row
-    campers = [create_camper(row) for row in sheet.iter_rows(min_row=2)]
+    campers = [create_preference(row) for row in sheet.iter_rows(min_row=2)]
 
     return campers
 
@@ -37,7 +37,7 @@ def _parse_header(header_row):
     # Creates dictionary connecting row numbers to
     cols = locate_header(header_row, header_objects)
 
-    def create_camper(row):
+    def create_preference(row):
         name = row[cols[header_name]].value
         edah = row[cols[header_edah]].value
         bunk = row[cols[header_bunk]].value
@@ -45,6 +45,6 @@ def _parse_header(header_row):
         preference_indexes = [cols[pref] for pref in header_prefs]
         preferences = [row[i].value for i in preference_indexes]
 
-        return Camper(name, edah, bunk, preferences)
+        return Preference(name, edah, bunk, preferences)
 
-    return create_camper
+    return create_preference
