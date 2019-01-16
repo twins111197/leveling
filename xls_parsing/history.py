@@ -25,7 +25,7 @@ def _parse_header(header_row):
     # Determine number of past activities -- assumes same number of preference columns as activity columns
     counter = 0
     for cell in header_row:
-        if "Activity" in header_row[cell].value:
+        if "Activity" in cell.value:
             counter += 1
     header_past_activities = ["Past Activity %d" % (i + 1) for i in range(counter)]
     header_past_preferences = ["Past Preference %d" % (i + 1) for i in range(counter)]
