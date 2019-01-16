@@ -43,7 +43,7 @@
 
 
   Camper Preferences <input type="file" id="preferences" name="preferences" accept=".xlsx"> <br /><br />
-  Camper Histories <input type="file" id="histories" name="histories" accept=".xlsx"><br /><br />
+  Camper Histories (optional) <input type="file" id="histories" name="histories" accept=".xlsx"><br /><br />
   Activities  <input type="file" id="activities" name="activities" accept=".xlsx"><br /><br />
   File name: <input type="text" name="filename" size="27" placeholder="Name of file (without .xlsx)"><br /><br />
   <input type="submit" value="Submit"/>
@@ -55,10 +55,6 @@
   form.onsubmit = function() {
       if (!form.preferences.value) {
                 alert("Missing preferences document.");
-                return false;
-              }
-      if (!form.histories.value) {
-                alert("Missing histories document.");
                 return false;
               }
       if (!form.activities.value) {

@@ -51,10 +51,11 @@ def sorted():
     create_activities(activities, activities_location)
 
     # Update camper objects
-    history_location = request.files["histories"]
-    # Give the location of the input file
-    update_campers(campers, history_location)
-    # Update camper objects
+    if len(request.files) > 2:
+        history_location = request.files["histories"]
+        # Give the location of the input file
+        update_campers(campers, history_location)
+        # Update camper objects
 
     # Sort campers
     sort_campers(campers, activities)
