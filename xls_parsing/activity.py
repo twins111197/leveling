@@ -1,10 +1,6 @@
 from xls_parsing.common import locate_header
 
-class Activity:
-    def __init__(self, name, capacity, repeatability):
-        self.name = name
-        self.capacity = capacity
-        self.repeatability = repeatability
+from activity import Activity
 
 
 
