@@ -1,3 +1,6 @@
+from common import locate_header
+
+
 class Preference:
     def __init__(self, name, edah, bunk, preferences):
         self.name = name
