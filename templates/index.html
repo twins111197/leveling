@@ -44,7 +44,6 @@
   Camper Histories <input type="file" id="histories" name="histories" accept=".xlsx"><br /><br />
   Activities  <input type="file" id="activities" name="activities" accept=".xlsx"><br /><br />
   <input type="submit" value="Submit"/>
-  <!-- <a href="/Users/shelly/Documents/Ramah/Leveling/Test Code Output/testing-master.xlsx" download="">Download</a> -->
 
 
 
@@ -53,30 +52,16 @@
   form.onsubmit = function() {
       if (!form.preferences.value) {
                 alert("Missing preferences document.");
-                // return false;
+                return false;
               }
       if (!form.histories.value) {
                 alert("Missing histories document.");
-                // return false;
+                return false;
               }
       if (!form.activities.value) {
                 alert("Missing activities document.");
-                // return false;
+                return false;
               }
-      const camperPreferences = document.getElementById("preferences").files[0]
-      alert(camperPreferences.name)
-      const objectURL = window.URL.createObjectURL(camperPreferences);
-
-
-
-
-
-      $.ajax({
-                url: objectURL,
-                success: function(response) {
-     // here you do whatever you want with the response variable -- aka run application.py on this, taking in the right URLs
-   }
-});
   }
 
 </script>
