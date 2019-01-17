@@ -31,6 +31,8 @@
       </ul>
   </ol>
   <br />
+  The website also allows you to name the downloaded file. Be sure to enter the name of the file that you want, leaving out the .xlsx ending. <br /><br />
+
   The algorithm for this program seeks to minimize the number of later choices as much as possible, while also including a tendency to hand out 2nd and 2nd choices instead of 1st and 3rd choices. It does this by always considering how hard the camper's next preference is to fill, and prioritizes those campers with harder following choices over those with easier following choices. It then looks for opportunities to switch 1st and 3rd, 4th, 5th... choices into 2nd and 2nd. The specifics are not terribly important, though, as Jake has found a better algorithm for accomplishing Didi's goals, which will be implemented in the coming days. More details available upon request.
 
 </body>
@@ -41,8 +43,9 @@
 
 
   Camper Preferences <input type="file" id="preferences" name="preferences" accept=".xlsx"> <br /><br />
-  Camper Histories <input type="file" id="histories" name="histories" accept=".xlsx"><br /><br />
+  Camper Histories (optional) <input type="file" id="histories" name="histories" accept=".xlsx"><br /><br />
   Activities  <input type="file" id="activities" name="activities" accept=".xlsx"><br /><br />
+  File name: <input type="text" name="filename" size="27" placeholder="Name of file (without .xlsx)"><br /><br />
   <input type="submit" value="Submit"/>
 
 
@@ -52,10 +55,6 @@
   form.onsubmit = function() {
       if (!form.preferences.value) {
                 alert("Missing preferences document.");
-                return false;
-              }
-      if (!form.histories.value) {
-                alert("Missing histories document.");
                 return false;
               }
       if (!form.activities.value) {
