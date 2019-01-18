@@ -3,7 +3,7 @@ import xlrd
 
 
 """Takes in an empty list and the Excel sheet location with preferences for the upcoming cycle, returns populated list of camper objects with Name, Edah, Bunk, and Preferences"""
-def create_campers(empty_campers_list, excel_location):
+def create_campers(empty_campers_list, sheet):
     # Define the class of objects called campers
     class Camper:
         def __init__(self):
@@ -22,10 +22,6 @@ def create_campers(empty_campers_list, excel_location):
             self.pref_5 = ""
             self.pref_6 = ""
 
-
-    # Open the excel sheet
-    wb = xlrd.open_workbook(file_contents=excel_location.read())        # Open the workbook of interest
-    sheet = wb.sheet_by_index(0)                   # Index to the sheet of interest
 
     # Creates the proper number of campers in the list
     for i in range(sheet.nrows - 1):             # Assumes header row
@@ -52,7 +48,7 @@ def create_campers(empty_campers_list, excel_location):
                     empty_campers_list[j].edah = sheet.cell_value(j + 1, i)
 
         # Adds preferences to camper objects, up to 9 preferences -- same for loop as above
-        elif "1" in sheet.cell_value(0, i) or "first" in sheet.cell_value(0, i).lower():
+        elif "1" in sheet.cell_value(0, i) or "first" in sheet.cell_value(0, i).lower(): # If name becomes first + last, problem here
             for j in range(sheet.nrows - 1):
                 if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
                     empty_campers_list[j].pref_1 = sheet.cell_value(j + 1, i)
@@ -675,6 +671,16 @@ def sort_campers(updated_campers_list, created_activities_list):
 
     if are_campers_sorted(updated_campers_list):            # Need if statement because clean function assumes full camper list
         clean(updated_campers_list, created_activities_list)
+    else:
+        counter = 0
+        temporary_list = []
+        for i in range(len(updated_campers_list)):
+            if updated_campers_list[i - counter].next_activity == "":
+                temporary_list.append(updated_campers_list.pop(i - counter))
+                counter += 1
+        clean(updated_campers_list, created_activities_list)
+        for i in range(len(temporary_list)):
+            updated_campers_list.append(temporary_list.pop())
 
 
 
