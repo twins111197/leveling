@@ -7,8 +7,7 @@ from flask import send_file
 
 
 """Takes in an empty list and the Excel sheet location with preferences for the upcoming cycle, returns populated list of camper objects with Name, Edah, Bunk, and Preferences"""
-
-
+def create_campers(empty_campers_list, sheet):
     # Creates the proper number of campers in the list
     for i in range(sheet.nrows - 1):             # Assumes header row
         empty_campers_list.append(Camper())
@@ -34,7 +33,7 @@ from flask import send_file
                     empty_campers_list[j].edah = sheet.cell_value(j + 1, i)
 
         # Adds preferences to camper objects, up to 9 preferences -- same for loop as above
-        elif "1" in sheet.cell_value(0, i) or "first" in sheet.cell_value(0, i).lower():
+        elif "1" in sheet.cell_value(0, i) or "first" in sheet.cell_value(0, i).lower(): # If name becomes first + last, problem here
             for j in range(sheet.nrows - 1):
                 if sheet.cell_type(j + 1, i) != xlrd.XL_CELL_EMPTY:  # Check if empty
                     empty_campers_list[j].pref_1 = sheet.cell_value(j + 1, i)
@@ -167,7 +166,6 @@ def sort_campers(updated_campers_list, created_activities_list):
                 created_activities_list[j].popularity_1 += 1
 
                 # Note: popularity_1 is initially used to determine if something is unpopular, meaning that all first and second choices of this activity can be assigned. After assigning those campers, popularity_1 reverts to its originally intended goal of telling us which activities have contested spots with first-choices only.
-
     # Assign choices for activities with enough spots for all first and second requests (if repeatable or the camper hasn't had it yet)
     for i in range(len(created_activities_list)):
         if created_activities_list[i].popularity_1 <= created_activities_list[i].capacity:              # Activities with enough spots
@@ -616,7 +614,7 @@ def sort_campers(updated_campers_list, created_activities_list):
     for i in range(len(updated_campers_list)):
         if updated_campers_list[i].next_activity == "":
             for j in range(len(created_activities_list)):
-                if updated_campers_list[i].pref_5.lower() == created_activities_list[j].name.lower():
+                if updated_campers_list[i].pref_6.lower() == created_activities_list[j].name.lower():
                     created_activities_list[j].popularity_1 += 1
 
     # Assign choices for activities with enough spots for all 6th requests (if repeatable or the camper hasn't had it yet)
@@ -658,6 +656,16 @@ def sort_campers(updated_campers_list, created_activities_list):
 
     if are_campers_sorted(updated_campers_list):            # Need if statement because clean function assumes full camper list
         clean(updated_campers_list, created_activities_list)
+    else:
+        counter = 0
+        temporary_list = []
+        for i in range(len(updated_campers_list)):
+            if updated_campers_list[i - counter].next_activity == "":
+                temporary_list.append(updated_campers_list.pop(i - counter))
+                counter += 1
+        clean(updated_campers_list, created_activities_list)
+        for i in range(len(temporary_list)):
+            updated_campers_list.append(temporary_list.pop())
 
 
 
@@ -814,83 +822,3 @@ def clean(campers_list, activities_list):
                         campers_list[i].next_activity, campers_list[j].next_activity = campers_list[j].next_activity, campers_list[i].next_activity                                             # Switch activities
                         campers_list[j].past_preferences[len(campers_list[j].past_preferences) - 1] = 2  # Update preferences
                         campers_list[i].past_preferences[len(campers_list[i].past_preferences) - 1] = 2  # Update preferences
-
-# ===================================================================================================
-
-
-"""Assign color to a cell in an Excel Document based on Camper preference"""
-def assign_color(sheet, row, column, camper):
-    if camper.past_preferences[len(camper.past_preferences) - 1] == 1:
-        sheet.cell(row=row, column=column).fill = PatternFill(start_color='0fc70f', end_color='0fc70f', fill_type = "solid")
-    elif camper.past_preferences[len(camper.past_preferences) - 1] == 2:
-        sheet.cell(row=row, column=column).fill = PatternFill(start_color='FFEE08', end_color='FFEE08', fill_type = "solid")
-    elif camper.past_preferences[len(camper.past_preferences) - 1] == 3:
-        sheet.cell(row=row, column=column).fill = PatternFill(start_color='dd9a1f', end_color='dd9a1f', fill_type = "solid")
-    else:
-        sheet.cell(row=row, column=column).fill = PatternFill(start_color='ff0000', end_color='ff0000', fill_type = "solid")
-
-
-
-
-"""Output cycle excel document"""
-def output_cycle_excel(campers_list, title):
-    book = Workbook()           # Create the workbook
-    sheet = book.active         # Access the active sheet
-
-    # Write in explicit header row
-    sheet.cell(row=1, column=1).value = "Name"      # Note: rows and columns indexed starting from 1 in openpyxl
-    sheet.cell(row=1, column=2).value = "Edah"
-    sheet.cell(row=1, column=3).value = "Tzrif"
-    sheet.cell(row=1, column=4).value = "Peulah"
-
-    # Write in camper information relevant to the cycle
-    for i in range(len(campers_list)):
-        sheet.cell(row=i + 2, column=1).value = campers_list[i].name
-        sheet.cell(row=i + 2, column=2).value = campers_list[i].edah
-        sheet.cell(row=i + 2, column=3).value = campers_list[i].bunk
-        sheet.cell(row=i + 2, column=4).value = campers_list[i].next_activity
-
-    # Save the document
-    #book.save("/Users/shelly/Documents/Ramah/Leveling/Test Code Output/%s.xlsx" % title)#
-
-# ===================================================================================================
-
-
-
-"""Output master excel document"""
-def output_master_excel(campers_list):
-    book = Workbook()           # Create the workbook
-    sheet = book.active         # Access the active sheet
-
-    # Write in explicit header row
-    sheet.cell(row=1, column=1).value = "Name"      # Note: rows and columns indexed starting from 1 in openpyxl
-    sheet.cell(row=1, column=2).value = "Edah"
-    sheet.cell(row=1, column=3).value = "Tzrif"
-    sheet.cell(row=1, column=4).value = "Peulah"
-    sheet.cell(row=1, column=5).value = "Preference"
-
-    # Determine maximum number of past activities
-    max = 0
-    for i in range(len(campers_list)):
-        if len(campers_list[i].past_activities) > max:
-            max = len(campers_list[i].past_activities)
-
-    # Write determined number of header values
-    for j in range(max):
-        sheet.cell(row=1, column=j+6).value = "Past Peulot"
-        sheet.cell(row=1, column=max+6+j).value = "Past Preferences"
-
-    # Write in all camper information
-    for i in range(len(campers_list)):
-        sheet.cell(row=i + 2, column=1).value = campers_list[i].name
-        sheet.cell(row=i + 2, column=2).value = campers_list[i].edah
-        sheet.cell(row=i + 2, column=3).value = campers_list[i].bunk
-        sheet.cell(row=i + 2, column=4).value = campers_list[i].next_activity
-        assign_color(sheet, (i + 2), 4, campers_list[i])
-        """Indexes into past preferences for final value (which is the next activity's preference, stored here when the activity was assigned) -1 is necessary because length is not zero-indexed but the array is zero-indexed"""
-        sheet.cell(row=i + 2, column=5).value = campers_list[i].past_preferences[len(campers_list[i].past_preferences) - 1]
-        for j in range(len(campers_list[i].past_activities)):
-            sheet.cell(row=i + 2, column=6 + j).value = campers_list[i].past_activities[j]
-            sheet.cell(row=i + 2, column=6 + j + max).value = campers_list[i].past_preferences[j]
-
-    return book
