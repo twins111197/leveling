@@ -2,13 +2,18 @@
 from flask import Flask, flash, redirect, render_template, request, send_file, Response
 
 # Reading and writing an excel file using Python
-import xlrd
 import openpyxl
 from tempfile import NamedTemporaryFile
 
 
 # Helper functions I wrote to clean up application.py code
-from Helpers import create_campers, create_activities, update_campers, sort_campers
+import xls_parsing.preference as preference
+import xls_parsing.activity as activity
+import xls_parsing.history as history
+
+
+import hungarian
+import camper
 from xls_output import output_master_excel
 from guarding import check_preferences_for_input_errors, output_errors
 
@@ -35,18 +40,24 @@ def index():
     # User reached route via POST (as by submitting a form via POST)
     return render_template("index.html")
 
+def get_workbook(request, key):
+    stream = request.files[key]
+    with NamedTemporaryFile() as tmp:
+        tmp.write(stream.read())
+        tmp.seek(0)
+        workbook = openpyxl.load_workbook(tmp)
+    return workbook
 
 @app.route("/sorted", methods=["POST"])
 def sorted():
     """Sort campers and download the results as an Excel document"""
 
     # Open the input file
-    campers_location = request.files["preferences"]
-    wb = xlrd.open_workbook(file_contents=campers_location.read())
-    sheet = wb.sheet_by_index(0)
+    preferences_workbook = get_workbook(request, "preferences")
+    preferences_sheet = preferences_workbook.active
     # Check input file for proper input
-    errors = check_preferences_for_input_errors(sheet)
-    if errors != []:
+    errors = check_preferences_for_input_errors(preferences_sheet)
+    if errors:
         wb = output_errors(errors)
         # Download errors file
         with NamedTemporaryFile() as tmp:
@@ -59,27 +70,30 @@ def sorted():
             return r
 
     # Initializes the list
-    campers = list()
-    create_campers(campers, sheet)
+    preferences = preference.parse_sheet(preferences_sheet)
 
     # Create activity objects
-    activities_location = request.files["activities"]
-    # Give the location of the input file
-    activities = list()
-    # Initializes the list
-    create_activities(activities, activities_location)
+    activities_workbook = get_workbook(request, "activities")
+    activities_sheet = activities_workbook.active
+    activities = activity.parse_sheet(activities_sheet)
 
     # Update camper objects
-    if len(request.files) > 2:
-        history_location = request.files["histories"]
-        # Give the location of the input file
-        update_campers(campers, history_location)
-        # Update camper objects
+    if "histories" in request.files:
+        histories_workbook = get_workbook(request, "histories")
+        if len(histories_workbook.worksheets) >= 2:
+            histories_sheet = histories_workbook.worksheets[1]
+        else:
+            histories_sheet = histories_workbook.active
+        histories = history.parse_sheet(histories_sheet)
+    else:
+        histories = [ history.History(p.name, p.bunk, [], []) for p in preferences ]
 
-    # Sort campers
-    sort_campers(campers, activities)
+    campers = camper.merge_objects(preferences, activities, histories)
 
-    wb = output_master_excel(campers, activities)
+    # Sort camper
+    assignments = hungarian.sort_campers(campers, activities)
+
+    wb = output_master_excel(assignments, activities)
 
     with NamedTemporaryFile() as tmp:
         wb.save(tmp.name)

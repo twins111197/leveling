@@ -7,6 +7,12 @@ class Camper:
         self.past_activities = past_activities
         self.past_preferences = past_preferences
 
+    def pref_of(self, activity):
+        try:
+            return self.preferences.index(activity)
+        except ValueError:
+            return len(self.preferences)
+
 
 
 def merge_objects(preferences, activities, histories):    # These are all list objects
