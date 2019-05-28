@@ -20,15 +20,15 @@ def parse_sheet(sheet):
 
 def _parse_header(header_row):
     """Takes in the row we believe to be the header, returns a function that creates history objects"""
-    header_name = "Chanich Name"
-    header_bunk = "Chanich Tzrif"
+    header_name = "Name"
+    header_bunk = "Tzrif"
     # Determine number of past activities -- assumes same number of preference columns as activity columns
     counter = 0
     for cell in header_row:
-        if cell.value is not None and "Activity" in cell.value:
+        if cell.value is not None and "Past Peulah" in cell.value:
             counter += 1
-    header_past_activities = ["Past Activity %d" % (i + 1) for i in range(counter)]
-    header_past_preferences = ["Past Preference %d" % (i + 1) for i in range(counter)]
+    header_past_activities = ["Peulah"] + ["Past Peulah %d" % (i + 1) for i in range(counter)]
+    header_past_preferences = ["Preference"] + ["Past Preference %d" % (i + 1) for i in range(counter)]
 
     # Create a list of expected header items
     header_items = [header_name, header_bunk] + header_past_activities + header_past_preferences

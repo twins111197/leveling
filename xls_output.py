@@ -4,7 +4,7 @@ from openpyxl.utils import get_column_letter
 from functools import reduce
 from operator import add
 
-def output_master_excel(campers_list, activities_list):
+def output_master_excel(assignments, activities):
     """Output master excel document"""
     # Create the workbook
     book = Workbook()
@@ -19,10 +19,10 @@ def output_master_excel(campers_list, activities_list):
         sheet.column_dimensions[i].width = 23
 
     # Determine maximum number of past activities
-    max_past_activities = max(len(camper.past_activities) for camper in campers_list)
+    max_past_activities = max(len(camper.past_activities) for camper in assignments)
 
     # Create explicit header row -- Note: rows and columns indexed starting from 1 in openpyxl
-    header = ["Name", "Edah", "Tzrif", "Peulah"]
+    header = ["Name", "Edah", "Tzrif", "Peulah", "Preference"]
     if max_past_activities != 0:
         # Reduce takes an iterator and an operator and applies the operator one by one
         header += reduce(add, (["Past Peulah %d" % i, "Past Preference %d" % i] for i in range(1, max_past_activities + 1)))
@@ -33,18 +33,21 @@ def output_master_excel(campers_list, activities_list):
 
 
     # Create a list representing the row
-    for row, camper in enumerate(campers_list):
+    for row, camper in enumerate(assignments):
         attributes = [(camper.name, None, None),
                       (camper.edah, None, None),
                       (camper.bunk, None, None),
-                      format_activity(camper),
+                      format_activity(camper, assignments[camper]),
+                      (camper.pref_of(assignments[camper])+1, None, None)
                       ]
 
         # Add camper histories as attributes of a camper to be written
         if camper.past_activities != []:
-            attributes += reduce(add, ([(activity, None, None), (preference, None, None)]
-                          for activity, preference
-                          in zip(camper.past_activities, camper.past_preferences)))
+            attributes += sum(
+                ([ (activity.name, None, None), (preference, None, None) ]
+                for activity, preference
+                in zip(camper.past_activities, camper.past_preferences)),
+                [])
 
         # This does the actual writing of information from the row list
         for col, (text, color, font) in enumerate(attributes):
@@ -76,40 +79,31 @@ def output_master_excel(campers_list, activities_list):
         sheet2.cell(row=1, column=i+1).value = item
 
     # Create groups and determine empty spots
-    groups = group_by_activity(campers_list)
-    add_empty_spots(groups, activities_list)
-
-
-
+    groups = group_by_activity(assignments, activities)
 
     # Write information to the sheet
     row = 2
     for activity, group in groups.items():
         for camper in group:
-            # Prepare camper preferences
-            if camper is not None:
-                preferences = [
-                    camper.pref_1,
-                    camper.pref_2,
-                    camper.pref_3,
-                    camper.pref_4,
-                    camper.pref_5,
-                    camper.pref_6
-            ]
-            sheet2.cell(row=row, column=1).value = activity
+            if activity is not None:
+                sheet2.cell(row=row, column=1).value = activity.name
+            else:
+                sheet2.cell(row=row, column=1).value = 'Unassigned'
             camper_cell = sheet2.cell(row=row, column=2)
             if camper is None:
                 camper_cell.fill = PatternFill(start_color='2BFFF5', end_color='2BFFF5', fill_type = "solid")
             else:
                 camper_cell.value = camper.name
-                # Camper hasn't been assigned yet - TODO: reformat
-                if camper.next_activity == "":
+                if activity is None:
+                    camper_cell.fill = PatternFill(start_color='808080', end_color='808080', fill_type = "solid")
+                    camper_cell.font = Font(color="FFFFFF")
+                elif activity not in camper.preferences:
                     camper_cell.fill = PatternFill(start_color='000000', end_color='000000', fill_type = "solid")
                     camper_cell.font = Font(color="FFFFFF")
                 else:
-                    camper_cell.fill = determine_color(camper.past_preferences[-1])
-                for column, preference in enumerate(preferences):
-                    sheet2.cell(row=row, column=column+3).value = preference
+                    camper_cell.fill = determine_color(camper.pref_of(activity) + 1)
+                for column, preference in enumerate(camper.preferences):
+                    sheet2.cell(row=row, column=column+3).value = preference.name
             row += 1
         row += 1
 
@@ -117,39 +111,28 @@ def output_master_excel(campers_list, activities_list):
 
 
 
-def group_by_activity(campers_list):
+def group_by_activity(assignments, activities):
     """Takes a list of campers, returns dictionary with activities as keys, elements are a list of camper objects in that activity"""
-    groups = {}
-    for camper in campers_list:
-        if camper.next_activity in groups:
-            groups[camper.next_activity].append(camper)
-        else:
-            groups[camper.next_activity] = [camper]
+    groups = { activity: [camper for camper in assignments if assignments[camper] == activity] for activity in activities + [None] }
+
+    # Add empty slots
+    for activity in groups:
+        num_campers = len(groups[activity])
+        if activity is not None and num_campers < activity.capacity:
+            groups[activity] += [None] * (activity.capacity - num_campers)
 
     return groups
 
-
-
-def add_empty_spots(groups, activities_list):
-    """Takes in dictionary of sorted groups, and a list of activities offered, and outputs groups with empty spots"""
-    capacities = {activity.name: activity.capacity for activity in activities_list}
-    for activity in activities_list:
-        if activity.name in groups:
-            num_campers = len(groups[activity.name])
-            if num_campers < activity.capacity:
-                groups[activity.name] += [None] * (activity.capacity - num_campers)
-        else:
-            groups[activity.name] = [None] * activity.capacity
-
-
-"""Assign color to a cell in an Excel Document based on Camper preference"""
-def format_activity(camper):
+def format_activity(camper, activity):
+    """Assign color to a cell in an Excel Document based on Camper preference"""
     # Create an alert color if a camper wasn't assigned an activity
-    if camper.next_activity == "":
-        return "NO ACTIVITY ASSIGNED", PatternFill(start_color='000000', end_color='000000', fill_type = "solid"), Font(color="FFFFFF")
+    if activity is None:
+        return 'Unassigned', PatternFill(start_color='808080', end_color='808080', fill_type = "solid"), Font(color="FFFFFF")
+    elif activity not in camper.preferences:
+        return activity.name, PatternFill(start_color='000000', end_color='000000', fill_type = "solid"), Font(color="FFFFFF")
     else:
         # We know that there's at least one element in campers.past_preferences
-        return camper.next_activity, determine_color(camper.past_preferences[-1]), None
+        return activity.name, determine_color(camper.pref_of(activity)+1), None
 
 
 
