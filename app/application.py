@@ -2,7 +2,7 @@
 from tempfile import NamedTemporaryFile
 
 # Flask
-from flask import Flask, Response, flash, redirect, render_template, request, send_file
+from flask import Flask, Response, render_template, request
 
 # Packages
 import openpyxl
