@@ -7,15 +7,15 @@ from tempfile import NamedTemporaryFile
 
 
 # Helper functions I wrote to clean up application.py code
-import xls_parsing.preference as preference
-import xls_parsing.activity as activity
-import xls_parsing.history as history
+import lib.xls.parsing.preference as preference
+import lib.xls.parsing.activity as activity
+import lib.xls.parsing.history as history
 
 
-import hungarian
-import camper
-from xls_output import output_master_excel
-from guarding import check_preferences_for_input_errors, output_errors
+import lib.hungarian as hungarian
+import lib.camper as camper
+from lib.xls.output import output_master_excel
+from lib.xls.validation import check_preferences_for_input_errors, output_errors
 
 
 # ======================================================================================
@@ -78,7 +78,7 @@ def sorted():
     activities = activity.parse_sheet(activities_sheet)
 
     # Update camper objects
-    if "histories" in request.files:
+    if "histories" in request.files and request.files["histories"].filename != '':
         histories_workbook = get_workbook(request, "histories")
         if len(histories_workbook.worksheets) >= 2:
             histories_sheet = histories_workbook.worksheets[1]

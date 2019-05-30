@@ -1,4 +1,4 @@
-from xls_parsing.common import locate_header
+from .common import locate_header
 
 class History:
     def __init__(self, name, bunk, past_activities, past_preferences):

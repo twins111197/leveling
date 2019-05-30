@@ -1,6 +1,6 @@
-from xls_parsing.common import locate_header
+from .common import locate_header
 
-from activity import Activity
+from lib.activity import Activity
 
 
 
