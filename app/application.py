@@ -1,7 +1,5 @@
-# Setting up for online ability
 from flask import Flask, flash, redirect, render_template, request, send_file, Response
 
-# Reading and writing an excel file using Python
 import openpyxl
 from tempfile import NamedTemporaryFile
 
@@ -10,10 +8,6 @@ from lib.xls.parsing import parse_xls, InvalidPreferences
 from lib.xls.output import output_master_excel
 from lib.xls.validation import output_errors
 
-
-# ======================================================================================
-
-"""This is code for creating a web-based app, mostly taken from CS50 final project"""
 # Configure application
 app = Flask(__name__)
 
@@ -33,14 +27,6 @@ def index():
     # User reached route via POST (as by submitting a form via POST)
     return render_template("index.html")
 
-def get_workbook(request, key):
-    stream = request.files[key]
-    with NamedTemporaryFile() as tmp:
-        tmp.write(stream.read())
-        tmp.seek(0)
-        workbook = openpyxl.load_workbook(tmp)
-    return workbook
-
 @app.route("/sorted", methods=["POST"])
 def sorted():
     """Sort campers and download the results as an Excel document"""
@@ -57,26 +43,30 @@ def sorted():
     try:
         campers, activities = parse_xls(preferences_wb, activities_wb, histories_wb)
     except InvalidPreferences as e:
-        wb = output_errors(e.errors)
-        # Download errors file
-        with NamedTemporaryFile() as tmp:
-            wb.save(tmp.name)
-            tmp.seek(0)
-            stream = tmp.read()
-            r = Response(response=stream, status=200, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            r.headers["Content-Disposition"] = 'attachment; filename="errors.xlsx"'
-            return r
+        return render_workbook(output_errors(e.errors), "errors")
 
     # Sort campers
     assignments = hungarian.sort_campers(campers, activities)
 
     # Output results
     wb = output_master_excel(assignments, activities)
+    return render_workbook(wb, request.form.get("filename"))
+
+
+def get_workbook(request, key):
+    stream = request.files[key]
+    with NamedTemporaryFile() as tmp:
+        tmp.write(stream.read())
+        tmp.seek(0)
+        workbook = openpyxl.load_workbook(tmp)
+    return workbook
+
+def render_workbook(wb, name):
     with NamedTemporaryFile() as tmp:
         wb.save(tmp.name)
         tmp.seek(0)
         stream = tmp.read()
 
         r = Response(response=stream, status=200, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-        r.headers["Content-Disposition"] = 'attachment; filename="%s.xlsx"' % request.form.get("filename")
+        r.headers["Content-Disposition"] = 'attachment; filename="%s.xlsx"' % name
         return r
