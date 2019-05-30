@@ -1,7 +1,6 @@
 # Reading and writing an excel file using Python
 import xlrd
 
-
 """Takes in an empty list and the Excel sheet location with preferences for the upcoming cycle, returns populated list of camper objects with Name, Edah, Bunk, and Preferences"""
 
 

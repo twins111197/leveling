@@ -1,1 +1,1 @@
-from .merge import parse_xls, InvalidPreferences
+from .merge import InvalidPreferences, parse_xls

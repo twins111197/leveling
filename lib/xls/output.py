@@ -1,8 +1,11 @@
-from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Font
-from openpyxl.utils import get_column_letter
+# Standard Library
 from functools import reduce
 from operator import add
+
+# Packages
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill
+from openpyxl.utils import get_column_letter
 
 
 def output_master_excel(assignments, activities):

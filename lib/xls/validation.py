@@ -1,6 +1,9 @@
+# Standard Library
+from collections import Counter
+
+# Packages
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
-from collections import Counter
 
 
 def check_preferences_for_input_errors(sheet):

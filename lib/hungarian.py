@@ -1,6 +1,9 @@
+# Standard Library
+import random
+
+# Packages
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-import random
 
 
 def create_matrix(campers, activities):

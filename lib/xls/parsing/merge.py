@@ -1,6 +1,7 @@
 from lib.camper import Camper
+
 from ..validation import check_preferences_for_input_errors
-from . import preference, activity, history
+from . import activity, history, preference
 
 
 class InvalidPreferences(Exception):

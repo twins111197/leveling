@@ -1,11 +1,15 @@
-from flask import Flask, flash, redirect, render_template, request, send_file, Response
-
-import openpyxl
+# Standard Library
 from tempfile import NamedTemporaryFile
 
+# Flask
+from flask import Flask, Response, flash, redirect, render_template, request, send_file
+
+# Packages
+import openpyxl
+
 from lib import hungarian
-from lib.xls.parsing import parse_xls, InvalidPreferences
 from lib.xls.output import output_master_excel
+from lib.xls.parsing import InvalidPreferences, parse_xls
 from lib.xls.validation import output_errors
 
 # Configure application

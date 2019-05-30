@@ -1,6 +1,6 @@
-from .common import locate_header
-
 from lib.activity import Activity
+
+from .common import locate_header
 
 
 def parse_sheet(sheet):

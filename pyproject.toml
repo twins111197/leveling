@@ -1,0 +1,19 @@
+[tool.isort]
+sections="FUTURE,STDLIB,FLASK,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+
+import_heading_stdlib="Standard Library"
+known_standard_library="tempfile"
+
+import_heading_flask="Flask"
+known_flask="flask"
+
+import_heading_thirdparty="Packages"
+known_thirdparty="openpyxl"
+
+known_firstparty="lib"
+
+multi_line_output=3
+include_trailing_comma=true
+force_grid_wrap=0
+use_parentheses=true
+line_length=88
