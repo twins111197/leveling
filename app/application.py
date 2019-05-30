@@ -13,12 +13,12 @@ from lib.xls.parsing import InvalidPreferences, parse_xls
 from lib.xls.validation import output_errors
 
 # Configure application
-app = Flask(__name__)
+APP = Flask(__name__)
 
 # Ensure responses aren't cached
-if app.config["DEBUG"]:
+if APP.config["DEBUG"]:
 
-    @app.after_request
+    @APP.after_request
     def after_request(response):
         response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
         response.headers["Expires"] = 0
@@ -27,13 +27,13 @@ if app.config["DEBUG"]:
 
 
 # Create homescreen
-@app.route("/")
+@APP.route("/")
 def index():
     """Display homescreen"""
     return render_template("index.html")
 
 
-@app.route("/sorted", methods=["POST"])
+@APP.route("/sorted", methods=["POST"])
 def sorted():
     """Sort campers and download the results as an Excel document"""
 
