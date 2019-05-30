@@ -5,17 +5,10 @@ from flask import Flask, flash, redirect, render_template, request, send_file, R
 import openpyxl
 from tempfile import NamedTemporaryFile
 
-
-# Helper functions I wrote to clean up application.py code
-import lib.xls.parsing.preference as preference
-import lib.xls.parsing.activity as activity
-import lib.xls.parsing.history as history
-
-
-import lib.hungarian as hungarian
-import lib.camper as camper
+from lib import hungarian
+from lib.xls.parsing import parse_xls, InvalidPreferences
 from lib.xls.output import output_master_excel
-from lib.xls.validation import check_preferences_for_input_errors, output_errors
+from lib.xls.validation import output_errors
 
 
 # ======================================================================================
@@ -52,49 +45,33 @@ def get_workbook(request, key):
 def sorted():
     """Sort campers and download the results as an Excel document"""
 
-    # Open the input file
-    preferences_workbook = get_workbook(request, "preferences")
-    preferences_sheet = preferences_workbook.active
-    # Check input file for proper input
-    errors = check_preferences_for_input_errors(preferences_sheet)
-    if errors:
-        wb = output_errors(errors)
+    # Get the input workbooks
+    preferences_wb = get_workbook(request, "preferences")
+    activities_wb = get_workbook(request, "activities")
+    if "histories" in request.files and request.files["histories"].filename != '':
+        histories_wb = get_workbook(request, "histories")
+    else:
+        histories_wb = None
+
+    # Parse the input
+    try:
+        campers, activities = parse_xls(preferences_wb, activities_wb, histories_wb)
+    except InvalidPreferences as e:
+        wb = output_errors(e.errors)
         # Download errors file
         with NamedTemporaryFile() as tmp:
             wb.save(tmp.name)
             tmp.seek(0)
             stream = tmp.read()
-
             r = Response(response=stream, status=200, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             r.headers["Content-Disposition"] = 'attachment; filename="errors.xlsx"'
             return r
 
-    # Initializes the list
-    preferences = preference.parse_sheet(preferences_sheet)
-
-    # Create activity objects
-    activities_workbook = get_workbook(request, "activities")
-    activities_sheet = activities_workbook.active
-    activities = activity.parse_sheet(activities_sheet)
-
-    # Update camper objects
-    if "histories" in request.files and request.files["histories"].filename != '':
-        histories_workbook = get_workbook(request, "histories")
-        if len(histories_workbook.worksheets) >= 2:
-            histories_sheet = histories_workbook.worksheets[1]
-        else:
-            histories_sheet = histories_workbook.active
-        histories = history.parse_sheet(histories_sheet)
-    else:
-        histories = [ history.History(p.name, p.bunk, [], []) for p in preferences ]
-
-    campers = camper.merge_objects(preferences, activities, histories)
-
-    # Sort camper
+    # Sort campers
     assignments = hungarian.sort_campers(campers, activities)
 
+    # Output results
     wb = output_master_excel(assignments, activities)
-
     with NamedTemporaryFile() as tmp:
         wb.save(tmp.name)
         tmp.seek(0)
