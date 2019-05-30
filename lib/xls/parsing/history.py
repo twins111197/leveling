@@ -1,11 +1,13 @@
 from .common import locate_header
 
+
 class History:
     def __init__(self, name, bunk, past_activities, past_preferences):
         self.name = name
         self.bunk = bunk
         self.past_activities = past_activities
         self.past_preferences = past_preferences
+
 
 def parse_sheet(sheet):
     """Takes in an Excel sheet and spits out a list of objects containing camper histories"""
@@ -27,15 +29,20 @@ def _parse_header(header_row):
     for cell in header_row:
         if cell.value is not None and "Past Peulah" in cell.value:
             counter += 1
-    header_past_activities = ["Peulah"] + ["Past Peulah %d" % (i + 1) for i in range(counter)]
-    header_past_preferences = ["Preference"] + ["Past Preference %d" % (i + 1) for i in range(counter)]
+    header_past_activities = ["Peulah"] + [
+        "Past Peulah %d" % (i + 1) for i in range(counter)
+    ]
+    header_past_preferences = ["Preference"] + [
+        "Past Preference %d" % (i + 1) for i in range(counter)
+    ]
 
     # Create a list of expected header items
-    header_items = [header_name, header_bunk] + header_past_activities + header_past_preferences
+    header_items = (
+        [header_name, header_bunk] + header_past_activities + header_past_preferences
+    )
 
     # Create a dictionary mapping the header items to column numbers
     cols = locate_header(header_row, header_items)
-
 
     def create_history(row):
         """Takes in a row, returns a history object"""

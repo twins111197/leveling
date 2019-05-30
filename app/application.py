@@ -13,6 +13,7 @@ app = Flask(__name__)
 
 # Ensure responses aren't cached
 if app.config["DEBUG"]:
+
     @app.after_request
     def after_request(response):
         response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
@@ -20,12 +21,13 @@ if app.config["DEBUG"]:
         response.headers["Pragma"] = "no-cache"
         return response
 
+
 # Create homescreen
 @app.route("/")
 def index():
     """Display homescreen"""
-    # User reached route via POST (as by submitting a form via POST)
     return render_template("index.html")
+
 
 @app.route("/sorted", methods=["POST"])
 def sorted():
@@ -34,7 +36,7 @@ def sorted():
     # Get the input workbooks
     preferences_wb = get_workbook(request, "preferences")
     activities_wb = get_workbook(request, "activities")
-    if "histories" in request.files and request.files["histories"].filename != '':
+    if "histories" in request.files and request.files["histories"].filename != "":
         histories_wb = get_workbook(request, "histories")
     else:
         histories_wb = None
@@ -61,12 +63,17 @@ def get_workbook(request, key):
         workbook = openpyxl.load_workbook(tmp)
     return workbook
 
+
 def render_workbook(wb, name):
     with NamedTemporaryFile() as tmp:
         wb.save(tmp.name)
         tmp.seek(0)
         stream = tmp.read()
 
-        r = Response(response=stream, status=200, mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        r = Response(
+            response=stream,
+            status=200,
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
         r.headers["Content-Disposition"] = 'attachment; filename="%s.xlsx"' % name
         return r

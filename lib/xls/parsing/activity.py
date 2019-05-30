@@ -3,7 +3,6 @@ from .common import locate_header
 from lib.activity import Activity
 
 
-
 def parse_sheet(sheet):
     """Takes in the activities Excel sheet, outputs a list of activity objects"""
     header_row = sheet[1]
@@ -27,13 +26,11 @@ def _parse_header(header_row):
     # Create dictionary of header objects mapped to the columns they appear in
     cols = locate_header(header_row, header_objects)
 
-
     def create_activity(row):
         name = row[cols[header_name]].value
         capacity = row[cols[header_capacity]].value
         repeatability = row[cols[header_repeatability]].value
 
         return Activity(name, capacity, repeatability)
-
 
     return create_activity

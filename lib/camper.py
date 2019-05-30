@@ -1,5 +1,7 @@
 class Camper:
-    def __init__(self, name, edah, bunk, preferences, past_activities, past_preferences):
+    def __init__(
+        self, name, edah, bunk, preferences, past_activities, past_preferences
+    ):
         self.name = name
         self.edah = edah
         self.bunk = bunk

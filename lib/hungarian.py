@@ -24,10 +24,11 @@ def create_matrix(campers, activities):
 
         return cost
 
-    matrix = np.fromfunction(np.vectorize(cost_of), (len(campers), len(col_headers)), dtype=int)
+    matrix = np.fromfunction(
+        np.vectorize(cost_of), (len(campers), len(col_headers)), dtype=int
+    )
 
     return col_headers, matrix
-
 
 
 def multiply_activity(activity):
@@ -35,9 +36,8 @@ def multiply_activity(activity):
     return [activity] * activity.capacity
 
 
-
 def sort_campers(campers, activities):
-    """""" ## TODO:
+    """"""  ## TODO:
 
     # Make a copy so that the original list isn't messed with
     campers = campers.copy()
@@ -48,9 +48,13 @@ def sort_campers(campers, activities):
 
     _, assignments = linear_sum_assignment(matrix)
 
-    final_assignments = { camper: col_headers[index] for camper, index in zip(campers, assignments) }
+    final_assignments = {
+        camper: col_headers[index] for camper, index in zip(campers, assignments)
+    }
 
     # Add the campers who aren't assigned an activity if not enough spots for all campers
-    final_assignments.update({ camper: None for camper in campers if camper not in final_assignments })
+    final_assignments.update(
+        {camper: None for camper in campers if camper not in final_assignments}
+    )
 
     return final_assignments

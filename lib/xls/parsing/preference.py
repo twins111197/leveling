@@ -1,13 +1,12 @@
 from .common import locate_header
 
+
 class Preference:
     def __init__(self, name, edah, bunk, preferences):
         self.name = name
         self.edah = edah
         self.bunk = bunk
         self.preferences = preferences
-
-
 
 
 def parse_sheet(sheet):
@@ -19,7 +18,6 @@ def parse_sheet(sheet):
     campers = [create_preference(row) for row in sheet.iter_rows(min_row=2)]
 
     return campers
-
 
 
 def _parse_header(header_row):
