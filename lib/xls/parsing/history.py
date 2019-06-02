@@ -22,8 +22,8 @@ def parse_sheet(sheet):
 
 def _parse_header(header_row):
     """Takes in the row we believe to be the header, returns a function that creates history objects"""
-    header_name = "Name"
-    header_bunk = "Tzrif"
+    header_name = "Chanich Name"
+    header_bunk = "Chanich Tzrif"
     # Determine number of past activities -- assumes same number of preference columns as activity columns
     counter = 0
     for cell in header_row:
@@ -48,8 +48,8 @@ def _parse_header(header_row):
         """Takes in a row, returns a history object"""
         name = row[cols[header_name]].value
         bunk = row[cols[header_bunk]].value
-        past_activities = [row[cols[i]].value for i in header_past_activities]
-        past_preferences = [row[cols[i]].value for i in header_past_preferences]
+        past_activities = [row[cols[i]].value for i in header_past_activities if i in cols]
+        past_preferences = [row[cols[i]].value for i in header_past_preferences if i in cols]
 
         history = History(name, bunk, past_activities, past_preferences)
 
