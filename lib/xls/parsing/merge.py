@@ -29,7 +29,7 @@ def parse_xls(prefs_wb, activities_wb, histories_wb):
     # Parse the histories
     if histories_wb:
         if len(histories_wb.worksheets) >= 2:
-            histories_sheet = histories_workbook.worksheets[1]
+            histories_sheet = histories_wb.worksheets[1]
         else:
             histories_sheet = histories_wb.active
         histories = history.parse_sheet(histories_sheet)
