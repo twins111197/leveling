@@ -58,13 +58,18 @@ def merge_objects(preferences, activities, histories):  # These are all list obj
 
 def create_camper(preference, histories_dict, activities_dict):
     """Takes the preference object to be made a camper and dictionaries of histories and activities, outputs a Camper object"""
-    past_activities_strings, past_preferences = histories_dict[preference.name]
-    past_activities = [
-        activities_dict[activity_string] for activity_string in past_activities_strings
-    ]
-    preferences = [
-        activities_dict[activity_string] for activity_string in preference.preferences
-    ]
+    # 2nd session campers will have different length histories than full-summer campers, must guard for this, hence if/else
+    if preference.name in histories_dict:
+        past_activities_strings, past_preferences  = histories_dict[preference.name]
+        # Some None values might exist for the shorter history lists of 2nd session campers, so remove the None values below
+        past_preferences = [past_pref for past_pref in past_preferences if past_pref is not None]
+        past_activities = [activities_dict[activity_string] for activity_string in past_activities_strings if activity_string != None]
+    else:
+        past_activities = []
+        past_preferences = []
+    # If a camper has had an unrepeatable activity already, remove it from preferences altogether
+    preferences = [activities_dict[activity_string] for activity_string in preference.preferences if not
+                   (activities_dict[activity_string] in past_activities and activities_dict[activity_string].repeatability == False)]
     camper = Camper(
         preference.name,
         preference.edah,
