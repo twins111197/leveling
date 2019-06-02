@@ -7,37 +7,71 @@
 
 <body>
   <p>
-    Welcome to Camp Ramah in the Berkshires's leveling system! This program will assign activities as best as it can trying to maximize camper happiness. Please just upload the required 3 files, press submit, and watch as your assigned campers instantly download to your computer! Please note: the program only accepts .xlsx files.
+    Welcome to Camp Ramah in the Berkshires's leveling system! This program will assign activities according to the Hungarian algorithm to maximize camper happiness. This algorithm chooses to prioritize assigning 2 campers each their second choice instead of one camper their first choice and one camper their third choice. The nuances to the program are as follows:
+    <ul>
+      <li>
+        If an activity is not repeatable, the algorithm will not give the camper that activity again, even if they put it as their first choice.
+      </li>
+      <li>
+        If an activity is repeatable but the camper has already had that activity, then this camper will be sorted into this activity for a second time only after all other campers who also listed this activity with the same preference but who have not had this activity yet have been assigned to this activity for the first time.
+      </li>
+      <li>
+        The tiebreaker for camper sorting is based on how high preferences have been assigned in past cycles. Campers who have averaged their 3rd choice over the previous cycles will be sorted before campers who asked for the same activity but have averaged their 1st choice over the previous cycles.
+      </li>
+    </ul>
+
   </p><br />
   There are 3 input files on this page that you need to know about:
   <ol>
     <li>Camper Preferences</li>
       <ul>
         <li>
-          This document takes in the camper's preferences for the coming rotation. Currently, the program expects <b>no more than 6 camper preferences.</b> As currently constructed, there's only one field for "name," so please only include one column with the name rather than a first and last name. Include edah and bunk if you want - if they're there, they'll appear in the output, and if not the output file will have empty columns.
+          This document takes in the camper's preferences for the coming rotation. The header row should have entries "Chanich Name" (one column for first and last name), <b>"Edah"</b>, <b>"Chanich Tzrif"</b>, and <b>"Preference X"</b> where 'X' represents the number of the preference (1, 2, 3...etc.).
         </li>
       </ul>
     <li>Camper Histories</li>
       <ul>
         <li>
-          This document should contain a camper's name (make sure it matches what was listed for camper preferences!) and all of the past activities that this camper has had, plus the preference of those activities when assigned.
+          This document should contain a camper's name (make sure it matches what was listed for camper preferences!), tzrif, and all of the past activities that this camper has had, plus the preference of those activities when assigned. The header row entries should be <b>"Chanich Name"</b>, <b>"Chanich Tzrif"</b>, <b>"Past Peulah X"</b> where "X" represents the number of the peulah, and <b>"Past Preference X"</b> where "X" represents the number of the activity for which the preference is being listed.
         </li>
       </ul>
     <li>Activities</li>
       <ul>
         <li>
-          This document should contain the name of every activity, the activity's capacity (if unlimited, enter a number equal to or larger than the number of campers being sorted), and either "Yes" or "No" if the activity is reapeatable or not (for example, you may not want to allow campers to repeat mitbachon, or perhaps an activity like biking offers the same program every rotation and therefore a camper would be terribly bored in that activity for a second time).
+          This document should contain the name of every activity, the activity's capacity (if unlimited, enter a number equal to or larger than the number of campers being sorted), and either "Yes" or "No" if the activity is reapeatable or not (for example, you may not want to allow campers to repeat mitbachon, or perhaps an activity like biking offers the same program every rotation and therefore a camper would be terribly bored in that activity for a second time). The header row should have the cells <b>"Peulah"</b>, <b>"Capacity"</b>, and <b>"Repeatable"</b>.
         </li>
       </ul>
   </ol>
   <br />
-  The website also allows you to name the downloaded file. Be sure to enter the name of the file that you want, leaving out the .xlsx ending. <br /><br />
+  To run the program, upload an activities file and a preferences file; a histories file is optional. Entering the output file from the previous cycle as the histories file will work properly, so no extra formatting is required by the user! Then, name your output file, press submit, and watch as your camper assignments instantly download to your computer!
+  Please note: the program only accepts .xlsx files. <br /><br />
 
-  The algorithm is going to be improved in the coming days, but for now it works as follows: the algorithm seeks to minimize the number of later-preferenced choices as much as possible, while also including a tendency to hand out 2nd and 2nd choices instead of 1st and 3rd choices. It does this by always considering how hard the camper's next preference is to fill, and prioritizes those campers with harder following choices over those with easier following choices. It then looks for opportunities to switch 1st and 3rd, 4th, 5th... choices into 2nd and 2nd. More details available upon request.
+  The output file will color code camper assignments according to the following scheme:
+  <ul>
+    <li>
+      <span style="background-color: #0fc70f">Green</span> - 1st choice
+    </li>
+    <li>
+      <span style="background-color: #FFEE08">Yellow</span> - 2nd choice
+    </li>
+    <li>
+      <span style="background-color: #dd9a1f">Orange</span> - 3rd choice
+    </li>
+    <li>
+      <span style="background-color: #ff0000">Red</span> - 4th choice or later
+    </li>
+    <li>
+      <span style="background-color: #000000"><font color="white">Black</font></span> - The camper did not list this as a preference, but was assigned because there was an empty slot and all activities that the camper had preferenced are already full.
+    </li>
+    <li>
+      <span style="background-color: #2BFFF5">Turquoise</span> - Empty slot that a camper can be moved into
+    </li>
+    <li>
+      <span style="background-color: #808080">Grey</span> - A camper wasn't sorted, likely because there weren't enough spots in activities for every camper to be assigned.
+    </li>
+  </ul>
 
 </body>
-<br>
-</br>
 
 <form method="post" action="/sorted" id="run_app" enctype="multipart/form-data">
 
@@ -59,6 +93,11 @@
               }
       if (!form.activities.value) {
                 alert("Missing activities document.");
+                return false;
+              }
+
+      if (!form.filename.value) {
+                alert("Missing document title.");
                 return false;
               }
   }
