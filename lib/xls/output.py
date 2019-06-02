@@ -26,7 +26,7 @@ def output_master_excel(assignments, activities):
     max_past_activities = max(len(camper.past_activities) for camper in assignments)
 
     # Create explicit header row -- Note: rows and columns indexed starting from 1 in openpyxl
-    header = ["Name", "Edah", "Tzrif", "Peulah", "Preference"]
+    header = ["Chanich Name", "Edah", "Chanich Tzrif", "Peulah", "Preference"]
     if max_past_activities != 0:
         # Reduce takes an iterator and an operator and applies the operator one by one
         header += reduce(
@@ -83,8 +83,8 @@ def output_master_excel(assignments, activities):
         sheet2.column_dimensions[i].width = 23
 
     # Write header objects
-    header = ["Peulah", "Name"]
-    header += ["Preference %d" % i for i in range(1, 7)]
+    header = ["Peulah", "Chanich Name"]
+    header += ["Preference %d" % i for i in range(1,7)]
 
     # Write header row
     for i, item in enumerate(header):
