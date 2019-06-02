@@ -18,12 +18,13 @@ def create_matrix(campers, activities):
         activity = col_headers[j]
         cost = np.square(camper.pref_of(activity)) * 5
         if activity in camper.past_activities:
-            if activity.repeatability:
-                cost += 1
-            else:
-                cost += 10000
+            # Don't account for repeatability: non-repeatable prefs are removed for campers who've had the activity in camper.py
+            cost += 1
         if camper.past_preferences:
             cost += sum(camper.past_preferences) * 3 / len(camper.past_preferences)
+        else:
+            # If no history, assumes average luck of 1.5th choice, same multiplicative factor of 3 as above. 1.5 is arbitrary.
+            cost += 1.5 * 3
 
         return cost
 
