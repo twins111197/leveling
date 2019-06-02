@@ -29,7 +29,10 @@ def _parse_header(header_row):
     def create_activity(row):
         name = row[cols[header_name]].value
         capacity = row[cols[header_capacity]].value
-        repeatability = row[cols[header_repeatability]].value
+        if row[cols[header_repeatability]].value.lower() == "no":
+            repeatability = False
+        elif row[cols[header_repeatability]].value.lower() == "yes":
+            repeatability = True
 
         return Activity(name, capacity, repeatability)
 
