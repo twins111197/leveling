@@ -1,6 +1,6 @@
 from lib.camper import Camper
 
-from ..validation import check_preferences_for_input_errors
+from ..validation import check_for_input_errors
 from . import activity, history, preference
 
 
@@ -16,15 +16,15 @@ def parse_xls(prefs_wb, activities_wb, histories_wb):
     # Parse the preferences
     prefs_sheet = prefs_wb.active
 
-    errors = check_preferences_for_input_errors(prefs_sheet)
+    # Parse the activities
+    activities_sheet = activities_wb.active
+    activities = activity.parse_sheet(activities_sheet)
+
+    errors = check_for_input_errors(prefs_sheet, activities_sheet)
     if errors:
         raise InvalidPreferences(errors)
 
     preferences = preference.parse_sheet(prefs_sheet)
-
-    # Parse the activities
-    activities_sheet = activities_wb.active
-    activities = activity.parse_sheet(activities_sheet)
 
     # Parse the histories
     if histories_wb:
